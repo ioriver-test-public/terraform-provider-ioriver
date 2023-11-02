@@ -57,6 +57,7 @@ jobs:
 
       - name: Commit and Push Docs
         if: ${{ success() }}
+        continue-on-error: true
         run: |
           git config user.name "devops"
           git config user.email "devops@ioriver.io"
