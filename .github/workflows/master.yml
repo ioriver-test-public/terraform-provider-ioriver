@@ -51,12 +51,12 @@ jobs:
           go build ./...
 
       - name: Test
-        if: ${{ success() && !inputs.RUN_ACCEPTANCE_TESTS }}
+        if: success()
         run: |
           go test ./...
 
       - name: Make sweep(Terraform only)
-        if: ${{ inputs.RUN_ACCEPTANCE_TESTS }}
+        if: success()
         env:
           IORIVER_API_TOKEN: ${{ secrets.IORIVER_API_TOKEN }}
           IORIVER_TEST_SERVICE_ID: ${{ secrets.IORIVER_TEST_SERVICE_ID }}
@@ -72,7 +72,7 @@ jobs:
           make sweep
 
       - name: Make testacc(Terraform only)
-        if: ${{ inputs.RUN_ACCEPTANCE_TESTS }}
+        if: success()
         env:
           IORIVER_API_TOKEN: ${{ secrets.IORIVER_API_TOKEN }}
           IORIVER_TEST_SERVICE_ID: ${{ secrets.IORIVER_TEST_SERVICE_ID }}
@@ -88,6 +88,7 @@ jobs:
           make testacc
 
       - name: Versioning
+        if: success()
         id: semrel
         uses: go-semantic-release/action@v1
         with:
@@ -98,6 +99,7 @@ jobs:
           changelog-generator-opt: "emojis=true"
 
       - name: Trigger Release Workflow
+        if: success()
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
