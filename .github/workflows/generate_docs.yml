@@ -55,9 +55,15 @@ jobs:
           go generate ./...
 
       - name: Commit and Push Docs
+        if: ${{ success() }}
         run: |
           git config user.name "devops"
           git config user.email "devops@ioriver.io"
           git add docs
           git commit -m "Update docs"
           git push
+
+      - name: No changes
+        if: ${{ failure() }}
+        run: |
+          echo "No changes found on docs
