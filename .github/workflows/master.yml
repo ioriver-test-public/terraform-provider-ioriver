@@ -55,6 +55,38 @@ jobs:
         run: |
           go test ./...
 
+      - name: Make sweep(Terraform only)
+        if: ${{ inputs.RUN_ACCEPTANCE_TESTS }}
+        env:
+          IORIVER_API_TOKEN: ${{ secrets.IORIVER_API_TOKEN }}
+          IORIVER_TEST_SERVICE_ID: ${{ secrets.IORIVER_TEST_SERVICE_ID }}
+          IORIVER_TEST_DOMAIN: ${{ secrets.IORIVER_TEST_DOMAIN }}
+          IORIVER_TEST_CERT_ID: ${{ secrets.IORIVER_TEST_CERT_ID }}
+          IORIVER_TEST_FASTLY_API_TOKEN: ${{ secrets.IORIVER_TEST_FASTLY_API_TOKEN }}
+          IORIVER_TEST_SERVICE_PROVIDER_ID: ${{ secrets.IORIVER_TEST_SERVICE_PROVIDER_ID }}
+          IORIVER_TEST_DEFAULT_TRAFFIC_POLICY_ID: ${{ secrets.IORIVER_TEST_DEFAULT_TRAFFIC_POLICY_ID }}
+          IORIVER_TEST_ORIGIN_ID: ${{ secrets.IORIVER_TEST_ORIGIN_ID }}
+          IORIVER_TEST_DOMAIN_ID: ${{ secrets.IORIVER_TEST_DOMAIN_ID }}
+          TF_LOG: 'INFO'
+        run: |
+          make sweep
+
+      - name: Make testacc(Terraform only)
+        if: ${{ inputs.RUN_ACCEPTANCE_TESTS }}
+        env:
+          IORIVER_API_TOKEN: ${{ secrets.IORIVER_API_TOKEN }}
+          IORIVER_TEST_SERVICE_ID: ${{ secrets.IORIVER_TEST_SERVICE_ID }}
+          IORIVER_TEST_DOMAIN: ${{ secrets.IORIVER_TEST_DOMAIN }}
+          IORIVER_TEST_CERT_ID: ${{ secrets.IORIVER_TEST_CERT_ID }}
+          IORIVER_TEST_FASTLY_API_TOKEN: ${{ secrets.IORIVER_TEST_FASTLY_API_TOKEN }}
+          IORIVER_TEST_SERVICE_PROVIDER_ID: ${{ secrets.IORIVER_TEST_SERVICE_PROVIDER_ID }}
+          IORIVER_TEST_DEFAULT_TRAFFIC_POLICY_ID: ${{ secrets.IORIVER_TEST_DEFAULT_TRAFFIC_POLICY_ID }}
+          IORIVER_TEST_ORIGIN_ID: ${{ secrets.IORIVER_TEST_ORIGIN_ID }}
+          IORIVER_TEST_DOMAIN_ID: ${{ secrets.IORIVER_TEST_DOMAIN_ID }}
+          TF_LOG: 'INFO'
+        run: |
+          make testacc
+
       - name: Versioning
         id: semrel
         uses: go-semantic-release/action@v1
@@ -65,7 +97,7 @@ jobs:
           changelog-file: true
           changelog-generator-opt: "emojis=true"
 
-      - name: Trigger Master Workflow
+      - name: Trigger Release Workflow
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
