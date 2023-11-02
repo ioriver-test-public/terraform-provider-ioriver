@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         if: success()
         run: |
-          go mod vendor
+          go get
 
       - name: Install golangci-lint
         if: success()
@@ -58,6 +58,12 @@ jobs:
         run: |
           go test ./...
 
+      - name: Generate docs
+        if: ${{ success() }}
+        run: |
+          mkdir -p docs
+          go generate ./...
+
       - name: Versioning
         id: semrel
         uses: go-semantic-release/action@v1
@@ -67,9 +73,3 @@ jobs:
           allow-initial-development-versions: true
           changelog-file: true
           changelog-generator-opt: "emojis=true"
-
-#      - name: Archive artifacts
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: ioriver-go
-#          path: dist/ioriver-go
