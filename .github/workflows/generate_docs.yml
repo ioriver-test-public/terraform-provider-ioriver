@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'docs/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -50,22 +48,16 @@ jobs:
         run: |
           golangci-lint run --fast
 
-      - name: Build
-        if: success()
+      - name: Generate docs
+        if: ${{ success() }}
         run: |
-          go build ./...
+          mkdir -p docs
+          go generate ./...
 
-      - name: Test
-        if: ${{ success() && !inputs.RUN_ACCEPTANCE_TESTS }}
+      - name: Commit and Push Docs
         run: |
-          go test ./...
-
-      - name: Versioning
-        id: semrel
-        uses: go-semantic-release/action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          force-bump-patch-version: false
-          allow-initial-development-versions: true
-          changelog-file: true
-          changelog-generator-opt: "emojis=true"
+          git config user.name "devops"
+          git config user.email "devops@ioriver.io"
+          git add docs
+          git commit -m "Update docs"
+          git push
