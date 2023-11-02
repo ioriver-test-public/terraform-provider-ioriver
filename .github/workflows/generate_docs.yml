@@ -66,4 +66,4 @@ jobs:
       - name: No changes
         if: ${{ failure() }}
         run: |
-          echo "No changes found on docs
+          echo "No changes found on docs"
